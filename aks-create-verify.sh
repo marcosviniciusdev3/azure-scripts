@@ -3,28 +3,20 @@ set -e
 
 # Containerized Azure CLI wrapper
 # Automatically adjusts -it based on whether we are in a terminal/piped context
-source ./azure-cli.sh
+source ./common/azure-cli.sh
+source ./common/check-auth.sh
+source ./common/get-region.sh
 
 echo "============================================="
 echo "        Azure AKS Probing Utility            "
 echo "============================================="
 
 # 1. Check Login
-echo "Checking Azure authentication..."
-if ! az account show >/dev/null 2>&1; then
-    echo "Error: You are not logged in to Azure CLI inside the container."
-    echo "Please log in first by running:"
-    echo "  podman run -it -v azure:/root/.azure --rm mcr.microsoft.com/azure-cli:azurelinux3.0 az login"
-    exit 1
-fi
-echo "Azure authentication verified."
-echo ""
+check-auth
 
 # 2. Region Selection
-read -p "Enter Azure region [default: eastus]: " region
-region=${region:-eastus}
+region=$(read-region)
 echo "Using region: $region"
-echo ""
 
 # 3. Dynamic Node Size Querying
 echo "Fetching available VM sizes in '$region' (this may take a few seconds)..."

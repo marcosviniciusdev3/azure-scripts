@@ -3,7 +3,7 @@ set -e
 
 # Containerized Azure CLI wrapper
 # Automatically adjusts -it based on whether we are in a terminal/piped context
-source ./azure-cli.sh
+source ./common/azure-cli.sh
 
 echo "============================================="
 echo "        Azure Instance Probing Utility       "
